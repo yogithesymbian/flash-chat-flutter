@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat/constants.dart';
 
@@ -14,6 +15,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _auth = FirebaseAuth.instance;
+  Firebase? firebase;
   String? messageTxt;
   final messageController = TextEditingController();
 
@@ -84,15 +86,16 @@ class _ChatScreenState extends State<ChatScreen> {
                   FlatButton(
                     onPressed: () async {
                       //Implement send functionality.
-                      messageController.clear();
+
                       try {
                         final sentMsg =
                             await _firestore.collection('messages').add({
-                          'text': messageTxt,
+                          'text': messageController.text.toString(),
                           'sender': firebaseUser?.email,
-                          'timestamp': DateTime.now().microsecondsSinceEpoch,
+                          'timestamp': FieldValue.serverTimestamp(),
                         });
                         if (sentMsg != null) {
+                          messageController.clear();
                           print(sentMsg);
                         }
                       } catch (e) {
