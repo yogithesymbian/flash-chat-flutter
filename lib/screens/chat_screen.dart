@@ -45,8 +45,12 @@ class _ChatScreenState extends State<ChatScreen> {
               icon: Icon(Icons.close),
               onPressed: () {
                 //Implement logout functionality
-                _auth.signOut();
-                Navigator.pop(context);
+                try {
+                  _auth.signOut();
+                  Navigator.pop(context);
+                } catch (e) {
+                  print('signOut $e');
+                }
               }),
         ],
         title: Text('⚡️Chat'),
@@ -132,7 +136,6 @@ class MessageStreamBuilder extends StatelessWidget {
         for (var item in message) {
           final messageTxt = item.get('text');
           final messageSender = item.get('sender');
-          print('$messageTxt');
 
           final messageBubble = MessageBubble(
             messageTxt: messageTxt,
